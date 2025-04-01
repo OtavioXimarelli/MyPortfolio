@@ -3,20 +3,25 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       
       - name: Build Angular app
         run: npm run build --configuration production --base-href="/${{ github.event.repository.name }}/"
@@ -25,8 +30,8 @@ jobs:
         run: touch docs/.nojekyll
       
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
-          enable_jekyll: false
+          folder: docs
+          branch: gh-pages
+          clean: true
