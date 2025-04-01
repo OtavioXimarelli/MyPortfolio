@@ -28,6 +28,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist/$(grep -m 1 "outputPath" angular.json | awk -F: '{print $2}' | sed 's/[", ]//g')
+          folder: docs/
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
