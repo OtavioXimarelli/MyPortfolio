@@ -1,12 +1,37 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, HostListener } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'myPortfolio';
+export class AppComponent implements OnInit {
+  isDarkMode = false;
+  isMobileMenuOpen = false;
+  scrolled = false;
+
+  ngOnInit() {
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true
+    });
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const scrollPosition = window.scrollY || document.documentElement.scrollTop || 0;
+    this.scrolled = scrollPosition > 50;
+  }
+
+  toggleDarkMode() {
+    this.isDarkMode = !this.isDarkMode;
+    document.body.classList.toggle('dark-theme');
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
 }

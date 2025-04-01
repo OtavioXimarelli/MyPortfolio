@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfólio - Desenvolvedor Java Backend</title>
+  <style>
+    :root {
+      --primary: #3f51b5;
+      --secondary: #ff4081;
+      --dark: #303030;
+      --light: #f5f5f5;
+      --gray: #9e9e9e;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', Arial, sans-serif;
+    }
+    
+    body {
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* Header Styles */
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 20px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+    
+    .nav-links li {
+      margin-left: 30px;
+    }
+    
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      opacity: 0.8;
+    }
+    
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px;
+      background: linear-gradient(rgba(63, 81, 181, 0.9), rgba(63, 81, 181, 0.7)), url('/api/placeholder/1200/800') center/cover;
+      color: white;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+    }
+    
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--secondary);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    
+    .btn:hover {
+      background-color: #e91e63;
+    }
+    
+    /* Sobre Section */
+    .section {
+      padding: 100px 0;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 60px;
+      font-size: 2.5rem;
+      position: relative;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background-color: var(--primary);
+    }
+    
+    .about-content {
+      display: flex;
+      align-items: center;
+      gap: 50px;
+    }
+    
+    .about-img {
+      flex: 1;
+    }
+    
+    .about-img img {
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .about-text {
+      flex: 1;
+    }
+    
+    /* Habilidades Section */
+    .skills-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    
+    .skill-card {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+    
+    .skill-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .skill-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+      text-align: center;
+    }
+    
+    .skill-card h3 {
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    
+    /* Projetos Section */
+    .projects-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+    }
+    
+    .project-card {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+    
+    .project-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .project-img {
+      height: 200px;
+      overflow: hidden;
+    }
+    
+    .project-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    
+    .project-card:hover .project-img img {
+      transform: scale(1.1);
+    }
+    
+    .project-content {
+      padding: 20px;
+    }
+    
+    .project-content h3 {
+      margin-bottom: 10px;
+    }
+    
+    .project-content p {
+      margin-bottom: 20px;
+      color: var(--gray);
+    }
+    
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .tech {
+      background-color: var(--light);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+    
+    /* Contato Section */
+    .contact-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 50px;
+    }
+    
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .contact-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-size: 1.5rem;
+    }
+    
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .form-group label {
+      font-weight: bold;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      padding: 12px;
+      border-radius: 5px;
+      border: 1px solid var(--gray);
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 150px;
+    }
+    
+    /* Footer */
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 30px 0;
+      text-align: center;
+    }
+    
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      transition: background-color 0.3s ease;
+    }
+    
+    .social-icon:hover {
+      background-color: var(--secondary);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .about-content {
+        flex-direction: column;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Dev.Java</div>
+        <ul class="nav-links">
+          <li><a href="#inicio">Início</a></li>
+          <li><a href="#sobre">Sobre</a></li>
+          <li><a href="#habilidades">Habilidades</a></li>
+          <li><a href="#projetos">Projetos</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="inicio" class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Desenvolvedor Java Backend Especialista</h1>
+        <p>Criando soluções robustas e escaláveis para problemas complexos. Especializado em desenvolvimento backend com Java e frameworks modernos.</p>
+        <a href="#contato" class="btn">Entre em Contato</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="sobre" class="section">
+    <div class="container">
+      <h2 class="section-title">Sobre Mim</h2>
+      <div class="about-content">
+        <div class="about-img">
+          <img src="/api/placeholder/600/400" alt="Placeholder">
+        </div>
+        <div class="about-text">
+          <p>Sou um desenvolvedor Java Backend apaixonado por criar sistemas escaláveis e de alta performance. Com vários anos de experiência no desenvolvimento de aplicações empresariais, tenho trabalhado com diversas tecnologias e frameworks do ecossistema Java.</p>
+          <p>Minha expertise inclui o desenvolvimento de APIs RESTful, microsserviços, integração com bancos de dados relacionais e NoSQL, além de implementação de padrões de design e boas práticas de programação.</p>
+          <p>Estou sempre buscando aprender novas tecnologias e me manter atualizado com as tendências do mercado para oferecer as melhores soluções aos problemas que enfrento.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="habilidades" class="section" style="background-color: #f9f9f9;">
+    <div class="container">
+      <h2 class="section-title">Minhas Habilidades</h2>
+      <div class="skills-container">
+        <div class="skill-card">
+          <div class="skill-icon">☕</div>
+          <h3>Java</h3>
+          <p>Desenvolvimento avançado com Java 8+, programação orientada a objetos, padrões de design, multithreading e otimização de performance.</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🍃</div>
+          <h3>Spring Framework</h3>
+          <p>Experiência completa com Spring Boot, Spring MVC, Spring Data, Spring Security e Spring Cloud para desenvolvimento de aplicações modernas.</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🗄️</div>
+          <h3>Bancos de Dados</h3>
+          <p>Trabalho com bancos de dados SQL (MySQL, PostgreSQL, Oracle) e NoSQL (MongoDB, Cassandra), otimização de consultas e modelagem de dados.</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🔄</div>
+          <h3>Microsserviços</h3>
+          <p>Arquitetura e implementação de microsserviços, comunicação assíncrona, service discovery, API gateway e resiliência.</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🧪</div>
+          <h3>Testes Automatizados</h3>
+          <p>Testes unitários, integração e de sistema utilizando JUnit, Mockito, AssertJ, Test Containers e outras ferramentas de testes.</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🔧</div>
+          <h3>DevOps</h3>
+          <p>Experiência com Docker, Kubernetes, CI/CD pipelines, ferramentas de monitoramento e automação de infraestrutura.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projetos" class="section">
+    <div class="container">
+      <h2 class="section-title">Projetos Recentes</h2>
+      <div class="projects-container">
+        <div class="project-card">
+          <div class="project-img">
+            <img src="/api/placeholder/600/400" alt="Projeto 1">
+          </div>
+          <div class="project-content">
+            <h3>Sistema de Microserviços para E-commerce</h3>
+            <p>Plataforma de e-commerce baseada em microserviços que gerencia produtos, pedidos, pagamentos e entregas.</p>
+            <div class="tech-stack">
+              <span class="tech">Java 17</span>
+              <span class="tech">Spring Boot</span>
+              <span class="tech">Spring Cloud</span>
+              <span class="tech">Kafka</span>
+              <span class="tech">PostgreSQL</span>
+              <span class="tech">Docker</span>
+            </div>
+            <a href="#" class="btn">Ver Projeto</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-img">
+            <img src="/api/placeholder/600/400" alt="Projeto 2">
+          </div>
+          <div class="project-content">
+            <h3>API de Gestão Financeira</h3>
+            <p>API RESTful para gestão financeira pessoal com recursos de categorização, relatórios e planejamento orçamentário.</p>
+            <div class="tech-stack">
+              <span class="tech">Java</span>
+              <span class="tech">Spring Boot</span>
+              <span class="tech">JPA/Hibernate</span>
+              <span class="tech">MySQL</span>
+              <span class="tech">JWT</span>
+              <span class="tech">JUnit/Mockito</span>
+            </div>
+            <a href="#" class="btn">Ver Projeto</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-img">
+            <img src="/api/placeholder/600/400" alt="Projeto 3">
+          </div>
+          <div class="project-content">
+            <h3>Sistema de Automação de Processos</h3>
+            <p>Plataforma para automação de processos empresariais com suporte a fluxos de trabalho personalizados.</p>
+            <div class="tech-stack">
+              <span class="tech">Java</span>
+              <span class="tech">Quarkus</span>
+              <span class="tech">MongoDB</span>
+              <span class="tech">Angular</span>
+              <span class="tech">Redis</span>
+              <span class="tech">Kubernetes</span>
+            </div>
+            <a href="#" class="btn">Ver Projeto</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contato" class="section" style="background-color: #f9f9f9;">
+    <div class="container">
+      <h2 class="section-title">Entre em Contato</h2>
+      <div class="contact-container">
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">📧</div>
+            <div>
+              <h3>Email</h3>
+              <p>seuemail@exemplo.com</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📱</div>
+            <div>
+              <h3>Telefone</h3>
+              <p>+55 (11) 98765-4321</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div>
+              <h3>Localização</h3>
+              <p>São Paulo, SP - Brasil</p>
+            </div>
+          </div>
+        </div>
+        <div class="contact-form">
+          <div class="form-group">
+            <label for="name">Nome</label>
+            <input type="text" id="name" placeholder="Seu nome">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Seu email">
+          </div>
+          <div class="form-group">
+            <label for="subject">Assunto</label>
+            <input type="text" id="subject" placeholder="Assunto da mensagem">
+          </div>
+          <div class="form-group">
+            <label for="message">Mensagem</label>
+            <textarea id="message" placeholder="Sua mensagem"></textarea>
+          </div>
+          <button type="submit" class="btn">Enviar Mensagem</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="social-links">
+        <a href="#" class="social-icon">
+          <span>in</span>
+        </a>
+        <a href="#" class="social-icon">
+          <span>gh</span>
+        </a>
+        <a href="#" class="social-icon">
+          <span>tw</span>
+        </a>
+      </div>
+      <p>&copy; 2025 Seu Nome - Desenvolvedor Java Backend</p>
+    </div>
+  </footer>
+</html>

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "myPortfolio": {
+    "otavio-portfolio": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -15,30 +15,35 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/my-portfolio",
+            "outputPath": "dist/otavio-portfolio",
             "index": "src/index.html",
-            "browser": "src/main.ts",
+            "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/animate.css/animate.min.css",
+              "node_modules/aos/dist/aos.css"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
+            "scripts": [
+              "./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "./node_modules/aos/dist/aos.js",
+              "./node_modules/particles.js/particles.js"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/app/styles"
+              ]
             }
           },
           "configurations": {
@@ -46,39 +51,48 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ],
               "outputHashing": "all"
             },
             "development": {
+              "buildOptimizer": false,
               "optimization": false,
+              "vendorChunk": true,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "otavio-portfolio:build"
+          },
           "configurations": {
             "production": {
-              "buildTarget": "myPortfolio:build:production"
+              "browserTarget": "otavio-portfolio:build:production"
             },
             "development": {
-              "buildTarget": "myPortfolio:build:development"
+              "browserTarget": "otavio-portfolio:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "otavio-portfolio:build"
+          }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -90,18 +104,26 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "./node_modules/animate.css/animate.min.css",
+              "./node_modules/aos/dist/aos.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "./node_modules/aos/dist/aos.js",
+              "./node_modules/particles.js/particles.js"
+            ]
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "138b9b9a-fd6d-4e49-a25e-84ae713fa47f"
   }
 }
