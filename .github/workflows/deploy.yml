@@ -25,15 +25,13 @@ jobs:
       - name: Build
         run: npm run build -- --configuration production --base-href="/${{ github.event.repository.name }}/"
         
-      - name: Prepare deployment directory
-        run: |
-          mkdir -p docs
-          cp -r dist/MyPortfolio/* docs/
+      - name: Create .nojekyll file
+        run: touch dist/my-app/.nojekyll
         
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: docs
+          folder: docs/
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           clean: true
