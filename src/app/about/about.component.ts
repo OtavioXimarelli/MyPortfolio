@@ -11,6 +11,73 @@ export class AboutComponent implements OnInit {
   profileImage = 'assets/profile.jpg';
   fallbackImage = 'assets/profile-placeholder.jpg';
 
+  techIcons = [
+    { src: 'assets/icons/java.svg', alt: 'Java' },
+    { src: 'assets/icons/spring.svg', alt: 'Spring' },
+    { src: 'assets/icons/aws.svg', alt: 'AWS' },
+    { src: 'assets/icons/docker.svg', alt: 'Docker' }
+  ];
+
+  timeline = [
+    {
+      title: 'Início da Jornada em Programação',
+      description: 'Primeiro contato com Java e desenvolvimento de software.',
+      date: '2023'
+    },
+    {
+      title: 'Projetos com Spring Boot',
+      description: 'Desenvolvimento de aplicações usando Spring Boot e APIs REST.',
+      date: '2023'
+    },
+    {
+      title: 'Cloud & DevOps',
+      description: 'Aprendizado em AWS, Docker e práticas DevOps.',
+      date: '2024'
+    },
+    {
+      title: 'Inovação com IA',
+      description: 'Exploração de Spring AI e integração com agentes de IA.',
+      date: '2024'
+    }
+  ];
+
+  projectShowcase = [
+    {
+      title: 'API REST com Spring Boot',
+      description: 'API RESTful desenvolvida com Spring Boot e boas práticas',
+      icon: 'assets/icons/spring.svg',
+      technologies: ['Java', 'Spring Boot', 'JPA', 'PostgreSQL'],
+      githubUrl: 'https://github.com/seu-usuario/projeto1',
+      demoUrl: 'https://sua-demo.com',
+      isActive: false
+    },
+    {
+      title: 'Integração com AWS',
+      description: 'Sistema de upload de arquivos integrado com AWS S3',
+      icon: 'assets/icons/aws.svg',
+      technologies: ['Java', 'AWS S3', 'Spring Cloud AWS'],
+      githubUrl: 'https://github.com/seu-usuario/projeto2',
+      isActive: false
+    },
+    {
+      title: 'Spring AI Chat',
+      description: 'Chatbot integrado com modelos de IA',
+      icon: 'assets/icons/ai.svg',
+      technologies: ['Spring AI', 'OpenAI', 'WebSocket'],
+      githubUrl: 'https://github.com/seu-usuario/projeto3',
+      demoUrl: 'https://sua-demo.com',
+      isActive: false
+    },
+    {
+      title: 'Docker Compose Setup',
+      description: 'Ambiente de desenvolvimento containerizado',
+      icon: 'assets/icons/docker.svg',
+      technologies: ['Docker', 'Docker Compose', 'PostgreSQL', 'Redis'],
+      githubUrl: 'https://github.com/seu-usuario/projeto4',
+      isActive: false
+    }
+  ];
+
   constructor(private elementRef: ElementRef) {}
 
   ngOnInit() {
@@ -87,5 +154,13 @@ export class AboutComponent implements OnInit {
         behavior: 'smooth'
       });
     }
+  }
+
+  activateProject(project: any) {
+    project.isActive = true;
+  }
+
+  deactivateProject(project: any) {
+    project.isActive = false;
   }
 }
