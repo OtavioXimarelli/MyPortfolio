@@ -235,6 +235,7 @@ section {
 /* Gradient Text Effect */
 .gradient-text {
   background: linear-gradient(45deg, var(--primary), var(--secondary));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 200% 200%;
