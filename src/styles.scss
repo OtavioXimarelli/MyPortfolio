@@ -71,6 +71,12 @@ a {
 section {
   width: 100%;
   padding: var(--section-padding);
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: none !important;
+  /* Removendo a borda azul de depuração */
+  /* border: 1px solid blue; */
+  margin: 10px 0;
 }
 
 .section-title {
@@ -337,3 +343,20 @@ $breakpoints: (
     @content;
   }
 }
+
+/* Debug styles - remove in production */
+/* Removendo os estilos de depuração */
+/*
+app-about, app-skills, app-projects, app-contact {
+  display: block;
+  min-height: 300px;
+  padding: 30px;
+  border: 2px solid #ff0000;
+  margin: 20px 0;
+}
+
+.main-content {
+  border: 3px solid green;
+  padding: 10px;
+}
+*/

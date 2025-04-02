@@ -3,10 +3,8 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-projects',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.scss'] // Changed from styleUrl to styleUrls (array)
+  styleUrls: ['./projects.component.scss']
 })
 export class ProjectsComponent {
 

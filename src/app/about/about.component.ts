@@ -1,5 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, OnInit, ElementRef, NgZone, OnDestroy } from '@angular/core';
 import * as AOS from 'aos';
 
 @Component({
@@ -7,7 +6,7 @@ import * as AOS from 'aos';
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss']
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent implements OnInit, OnDestroy {
   profileImage = 'assets/profile.jpg';
   fallbackImage = 'assets/profile-placeholder.jpg';
 
@@ -78,64 +77,116 @@ export class AboutComponent implements OnInit {
     }
   ];
 
-  constructor(private elementRef: ElementRef) {}
+  private animationFrameId: number | null = null;
+  private observer: IntersectionObserver | null = null;
 
-  ngOnInit() {
-    // Initialize AOS
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true,
-      mirror: false
-    });
-
-    setTimeout(() => {
-      const sections = document.querySelectorAll('section');
-      sections.forEach(section => {
-        section.classList.add('visible');
-      });
-    }, 100);
+  constructor(private elementRef: ElementRef, private ngZone: NgZone) {
+    console.log("AboutComponent constructed");
   }
 
-  ngAfterViewInit() {
-    this.setupScrollAnimations();
-    this.initCounterAnimations();
+  ngOnInit() {
+    console.log("AboutComponent initialized");
+    
+    // Initialize AOS
+    setTimeout(() => {
+      AOS.init({
+        duration: 800,
+        easing: 'ease-out-cubic',
+        once: true,
+        mirror: false
+      });
+      
+      console.log('AOS initialized');
+      
+      // Force visibility for debugging
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        console.log('Making section visible:', section.id);
+        section.classList.add('visible');
+        section.style.opacity = '1';
+        section.style.transform = 'translateY(0)';
+      });
+    }, 500);
+
+    // Inicializar animações fora da zona do Angular
+    this.ngZone.runOutsideAngular(() => {
+      this.setupScrollAnimations();
+      this.initCounterAnimations();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   }
 
   private setupScrollAnimations() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            requestAnimationFrame(() => {
+              entry.target.classList.add('visible');
+            });
+          }
+        });
+      },
+      { 
+        threshold: 0.1,
+        rootMargin: '50px'
+      }
+    );
 
-    document.querySelectorAll('.animate-on-scroll').forEach(el => {
-      observer.observe(el);
-    });
+    this.elementRef.nativeElement
+      .querySelectorAll('.animate-on-scroll')
+      .forEach((el: Element) => this.observer?.observe(el));
   }
 
   private initCounterAnimations() {
-    const counters = document.querySelectorAll('.counter');
-    counters.forEach(counter => {
-      const target = parseInt(counter.textContent || '0', 10);
-      let count = 0;
-      const duration = 2000;
-      const step = target / (duration / 16);
-
-      const updateCount = () => {
-        if (count < target) {
-          count += step;
-          counter.textContent = Math.round(count) + '+';
-          requestAnimationFrame(updateCount);
-        } else {
-          counter.textContent = target + '+';
+    const counters = this.elementRef.nativeElement.querySelectorAll('.counter');
+    
+    const animate = (counter: Element, start: number, end: number, duration: number) => {
+      const range = end - start;
+      const startTime = performance.now();
+      
+      const updateCounter = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Função de easing para animação mais suave
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const current = Math.floor(start + range * easeOutQuart);
+        
+        counter.textContent = `${current}+`;
+        
+        if (progress < 1) {
+          this.animationFrameId = requestAnimationFrame(updateCounter);
         }
       };
+      
+      this.animationFrameId = requestAnimationFrame(updateCounter);
+    };
 
-      updateCount();
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const counter = entry.target;
+          const target = parseInt(counter.textContent || '0', 10);
+          animate(counter, 0, target, 2000);
+          this.observer?.unobserve(counter);
+        }
+      });
+    };
+
+    const counterObserver = new IntersectionObserver(observerCallback, {
+      threshold: 0.5
     });
+
+    counters.forEach((counter: Element) => counterObserver.observe(counter));
   }
 
   handleImageError() {
