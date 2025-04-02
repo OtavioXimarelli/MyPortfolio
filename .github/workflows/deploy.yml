@@ -2,7 +2,7 @@ name: Build and Deploy Angular App
 on:
   push:
     branches:
-      - Production  # Alterado de main para Production
+      - Production
   workflow_dispatch:
 
 permissions:
@@ -22,16 +22,38 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
+        
+      - name: Generate build timestamp
+        id: timestamp
+        run: echo "timestamp=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_OUTPUT
+      
+      - name: Create logs directory
+        run: mkdir -p deployment_logs
       
       - name: Build Angular app
-        run: npm run build --configuration production --output-path=docs --base-href="/${{ github.event.repository.name }}/"
+        run: |
+          npm run build --configuration production --output-path=docs --base-href="/${{ github.event.repository.name }}/" 2>&1 | tee deployment_logs/build_log_${{ steps.timestamp.outputs.timestamp }}.txt
       
       - name: Add .nojekyll file
         run: touch docs/.nojekyll
       
       - name: Deploy to GitHub Pages
+        id: deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: docs
           branch: gh-pages
           clean: true
+        
+      - name: Log deployment result
+        run: |
+          echo "Deployment completed at $(date)" >> deployment_logs/deploy_summary_${{ steps.timestamp.outputs.timestamp }}.txt
+          echo "Commit: ${{ github.sha }}" >> deployment_logs/deploy_summary_${{ steps.timestamp.outputs.timestamp }}.txt
+          echo "Deployment status: ${{ steps.deploy.outcome }}" >> deployment_logs/deploy_summary_${{ steps.timestamp.outputs.timestamp }}.txt
+      
+      - name: Archive deployment logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-logs-${{ steps.timestamp.outputs.timestamp }}
+          path: deployment_logs/
+          retention-days: 30
