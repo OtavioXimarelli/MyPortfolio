@@ -11,6 +11,8 @@ import { ProjectsComponent } from './projects/projects.component';
 import { ContactComponent } from './contact/contact.component';
 import { ScrollAnimationService } from './services/scroll-animation.service';
 import { CounterAnimationService } from './services/counter-animation.service';
+// Import the standalone component
+import { DevNoticeModalComponent } from './components/dev-notice-modal/dev-notice-modal.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +21,7 @@ import { CounterAnimationService } from './services/counter-animation.service';
     SkillsComponent,
     ProjectsComponent,
     ContactComponent
+    // Do not declare DevNoticeModalComponent here since it's standalone
   ],
   imports: [
     BrowserModule,
@@ -26,6 +29,8 @@ import { CounterAnimationService } from './services/counter-animation.service';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    // Import the standalone component here
+    DevNoticeModalComponent,
     RouterModule.forRoot([
       { path: '', component: AboutComponent },
       { path: 'skills', component: SkillsComponent },
