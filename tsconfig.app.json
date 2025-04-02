@@ -4,12 +4,12 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": [
-      "node"
-    ]
+    "types": [],
+    "skipLibCheck": true
   },
   "files": [
     "src/main.ts"
+<<<<<<< HEAD
   ],
   "include": [
     "src/**/*.d.ts"
@@ -25,5 +25,22 @@
     "node_modules/@angular/ssr/**",
     "**/*.server.ts",
     "**/*ssr*.*"
+=======
+  ],
+  "exclude": [
+    "src/server.ts",
+    "src/main.server.ts",
+    "src/app/app.config.server.ts",
+    "src/app/app.routes.server.ts",
+    "src/test.ts",
+    "**/*.spec.ts",
+    "**/node_modules/@angular/ssr/**",
+    "node_modules/@angular/ssr/**",
+    "**/*.server.ts",
+    "**/*ssr*.*"
+  ],
+  "include": [
+    "src/**/*.ts"
+>>>>>>> origin/Production
   ]
 }

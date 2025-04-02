@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/server",
+    "module": "CommonJS",
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "target": "ES2020",
+    "moduleResolution": "node",
+    "strict": false
+  },
+  "files": [
+    "src/server.ts"
+  ],
+  "exclude": [
+    "src/app/**/*.ts"
+  ]
+}

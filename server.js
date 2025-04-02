@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
+<<<<<<< HEAD
 const fs = require('fs');
+=======
+>>>>>>> origin/Production
 
 // Create express application
 const app = express();
@@ -12,8 +15,12 @@ app.use(express.static(DIST_FOLDER));
 
 // All routes serve the index.html file
 app.get('*', (req, res) => {
+<<<<<<< HEAD
   const indexPath = path.join(DIST_FOLDER, 'index.html');
   res.sendFile(indexPath);
+=======
+  res.sendFile(path.join(DIST_FOLDER, 'index.html'));
+>>>>>>> origin/Production
 });
 
 // Start the server

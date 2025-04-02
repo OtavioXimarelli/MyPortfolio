@@ -1,13 +1,5 @@
-import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
-import { provideClientHydration } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideRouter(routes),
-    provideClientHydration(),
-    provideAnimations()
-  ]
+// Arquivo simplificado para evitar conflitos com o SSR
+export const appConfig = {
+  production: false,
+  apiUrl: 'http://localhost:4000'
 };

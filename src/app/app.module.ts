@@ -11,8 +11,12 @@ import { ProjectsComponent } from './projects/projects.component';
 import { ContactComponent } from './contact/contact.component';
 import { ScrollAnimationService } from './services/scroll-animation.service';
 import { CounterAnimationService } from './services/counter-animation.service';
+<<<<<<< HEAD
 // Import the standalone component
 import { DevNoticeModalComponent } from './components/dev-notice-modal/dev-notice-modal.component';
+=======
+import { environment } from '../environments/environment';
+>>>>>>> origin/Production
 
 @NgModule({
   declarations: [
@@ -37,7 +41,10 @@ import { DevNoticeModalComponent } from './components/dev-notice-modal/dev-notic
       { path: 'projects', component: ProjectsComponent },
       { path: 'contact', component: ContactComponent },
       { path: '**', redirectTo: '' }
-    ])
+    ], { 
+      // Configurações do roteador baseadas no ambiente
+      useHash: environment.production 
+    })
   ],
   providers: [
     ScrollAnimationService,

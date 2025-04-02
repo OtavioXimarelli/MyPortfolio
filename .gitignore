@@ -40,3 +40,9 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# SSR files
+*.server.ts
+**/app.routes.server.ts
+**/app.config.server.ts
+**/main.server.ts
