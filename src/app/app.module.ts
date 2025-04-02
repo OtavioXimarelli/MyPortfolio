@@ -12,8 +12,12 @@ import { ContactComponent } from './contact/contact.component';
 import { ScrollAnimationService } from './services/scroll-animation.service';
 import { CounterAnimationService } from './services/counter-animation.service';
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Import the standalone component
 import { DevNoticeModalComponent } from './components/dev-notice-modal/dev-notice-modal.component';
+=======
+import { environment } from '../environments/environment';
+>>>>>>> origin/Production
 =======
 import { environment } from '../environments/environment';
 >>>>>>> origin/Production

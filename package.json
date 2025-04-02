@@ -6,7 +6,13 @@
     "start": "ng serve",
     "build": "ng build",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "build:prod": "ng build --configuration production",
+=======
+    "prebuild:prod": "./fix-beasties.sh",
+    "build:prod": "ng build --configuration production",
+    "build:all": "yarn build:prod",
+>>>>>>> origin/Production
 =======
     "prebuild:prod": "./fix-beasties.sh",
     "build:prod": "ng build --configuration production",
