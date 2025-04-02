@@ -1,5 +1,4 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import * as AOS from 'aos';
 
 @Component({
@@ -13,11 +12,15 @@ export class AppComponent implements OnInit {
   scrolled = false;
 
   ngOnInit() {
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true
-    });
+    console.log('AppComponent initialized');
+    // Initialize AOS
+    setTimeout(() => {
+      AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+      });
+    }, 100);
   }
 
   @HostListener('window:scroll', [])
