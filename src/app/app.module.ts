@@ -9,6 +9,8 @@ import { AboutComponent } from './about/about.component';
 import { SkillsComponent } from './skills/skills.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { ContactComponent } from './contact/contact.component';
+import { ScrollAnimationService } from './services/scroll-animation.service';
+import { CounterAnimationService } from './services/counter-animation.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,10 @@ import { ContactComponent } from './contact/contact.component';
       { path: '**', redirectTo: '' }
     ])
   ],
-  providers: [],
+  providers: [
+    ScrollAnimationService,
+    CounterAnimationService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

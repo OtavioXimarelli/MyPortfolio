@@ -53,6 +53,8 @@ body {
   background-color: var(--background);
   color: var(--dark);
   line-height: 1.6;
+  margin: 0; /* Garantindo que não haja margin no body */
+  padding: 0; /* Garantindo que não haja padding no body */
 }
 
 a {
@@ -74,9 +76,8 @@ section {
   opacity: 1 !important;
   transform: translateY(0) !important;
   transition: none !important;
-  /* Removendo a borda azul de depuração */
-  /* border: 1px solid blue; */
-  margin: 10px 0;
+  border: none; /* Remover qualquer borda */
+  margin: 0; /* Remover qualquer margem que possa estar causando espaço */
 }
 
 .section-title {

@@ -9,11 +9,12 @@
 /* Hero Section */
 .hero {
   position: relative;
-  min-height: calc(100vh - 80px);
+  min-height: 100vh; /* Ajustado para ocupar toda a altura da viewport */
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 120px 0 100px;
+  padding: 80px 0 100px; /* Ajustado o padding-top para compensar a altura do header */
+  margin-top: 0; /* Garantindo que não haja margin */
   background: linear-gradient(135deg, var(--primary-dark), var(--primary));
   color: white;
   will-change: transform;

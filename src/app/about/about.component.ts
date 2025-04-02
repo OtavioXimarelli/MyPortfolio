@@ -1,5 +1,7 @@
 import { Component, OnInit, ElementRef, NgZone, OnDestroy } from '@angular/core';
 import * as AOS from 'aos';
+import { ScrollAnimationService } from '../services/scroll-animation.service';
+import { CounterAnimationService } from '../services/counter-animation.service';
 
 @Component({
   selector: 'app-about',
@@ -77,10 +79,15 @@ export class AboutComponent implements OnInit, OnDestroy {
     }
   ];
 
-  private animationFrameId: number | null = null;
-  private observer: IntersectionObserver | null = null;
+  private scrollObserverId?: number;
+  private counterObserverId?: number;
 
-  constructor(private elementRef: ElementRef, private ngZone: NgZone) {
+  constructor(
+    private elementRef: ElementRef, 
+    private ngZone: NgZone,
+    private scrollAnimationService: ScrollAnimationService,
+    private counterAnimationService: CounterAnimationService
+  ) {
     console.log("AboutComponent constructed");
   }
 
@@ -100,93 +107,31 @@ export class AboutComponent implements OnInit, OnDestroy {
       
       // Force visibility for debugging
       const sections = document.querySelectorAll('section');
-      sections.forEach(section => {
-        console.log('Making section visible:', section.id);
-        section.classList.add('visible');
-        section.style.opacity = '1';
-        section.style.transform = 'translateY(0)';
-      });
+      this.scrollAnimationService.forceVisibility(Array.from(sections));
     }, 500);
 
-    // Inicializar animações fora da zona do Angular
-    this.ngZone.runOutsideAngular(() => {
-      this.setupScrollAnimations();
-      this.initCounterAnimations();
-    });
+    // Initialize animations outside Angular zone for better performance
+    this.initAnimations();
   }
 
   ngOnDestroy() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-    }
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+    // Clean up animations
+    this.scrollAnimationService.cleanup();
+    this.counterAnimationService.cleanup();
   }
 
-  private setupScrollAnimations() {
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            requestAnimationFrame(() => {
-              entry.target.classList.add('visible');
-            });
-          }
-        });
-      },
-      { 
-        threshold: 0.1,
-        rootMargin: '50px'
-      }
-    );
+  private initAnimations() {
+    // Initialize scroll animations
+    const animatedElements = this.elementRef.nativeElement.querySelectorAll('.animate-on-scroll');
+    if (animatedElements.length) {
+      this.scrollObserverId = this.scrollAnimationService.initScrollAnimations(Array.from(animatedElements));
+    }
 
-    this.elementRef.nativeElement
-      .querySelectorAll('.animate-on-scroll')
-      .forEach((el: Element) => this.observer?.observe(el));
-  }
-
-  private initCounterAnimations() {
+    // Initialize counter animations
     const counters = this.elementRef.nativeElement.querySelectorAll('.counter');
-    
-    const animate = (counter: Element, start: number, end: number, duration: number) => {
-      const range = end - start;
-      const startTime = performance.now();
-      
-      const updateCounter = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Função de easing para animação mais suave
-        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-        const current = Math.floor(start + range * easeOutQuart);
-        
-        counter.textContent = `${current}+`;
-        
-        if (progress < 1) {
-          this.animationFrameId = requestAnimationFrame(updateCounter);
-        }
-      };
-      
-      this.animationFrameId = requestAnimationFrame(updateCounter);
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const counter = entry.target;
-          const target = parseInt(counter.textContent || '0', 10);
-          animate(counter, 0, target, 2000);
-          this.observer?.unobserve(counter);
-        }
-      });
-    };
-
-    const counterObserver = new IntersectionObserver(observerCallback, {
-      threshold: 0.5
-    });
-
-    counters.forEach((counter: Element) => counterObserver.observe(counter));
+    if (counters.length) {
+      this.counterObserverId = this.counterAnimationService.initCounterAnimations(Array.from(counters));
+    }
   }
 
   handleImageError() {

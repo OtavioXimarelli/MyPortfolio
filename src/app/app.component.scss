@@ -414,7 +414,7 @@
 main {
   flex: 1;
   width: 100%;
-  margin-top: 80px;
+  margin-top: 0; /* Removido o margin-top que estava causando o espaço */
   padding-bottom: 0;
 
   .container {
@@ -427,7 +427,7 @@ main {
 
 .main-content {
   min-height: 100vh;
-  padding-top: 70px;
+  padding-top: 0; /* Removido padding-top que estava causando o espaço */
   width: 100%;
   overflow-x: hidden;
 }
