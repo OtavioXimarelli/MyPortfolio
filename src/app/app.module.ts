@@ -11,6 +11,7 @@ import { ProjectsComponent } from './projects/projects.component';
 import { ContactComponent } from './contact/contact.component';
 import { ScrollAnimationService } from './services/scroll-animation.service';
 import { CounterAnimationService } from './services/counter-animation.service';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,10 @@ import { CounterAnimationService } from './services/counter-animation.service';
       { path: 'projects', component: ProjectsComponent },
       { path: 'contact', component: ContactComponent },
       { path: '**', redirectTo: '' }
-    ])
+    ], { 
+      // Configurações do roteador baseadas no ambiente
+      useHash: environment.production 
+    })
   ],
   providers: [
     ScrollAnimationService,

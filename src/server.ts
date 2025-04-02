@@ -1,66 +1,59 @@
-import {
-  AngularNodeAppEngine,
-  createNodeRequestHandler,
-  isMainModule,
-  writeResponseToNodeResponse,
-} from '@angular/ssr/node';
 import express from 'express';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'path';
+import * as fs from 'fs';
+import { Request, Response, NextFunction } from 'express';
 
-const serverDistFolder = dirname(fileURLToPath(import.meta.url));
-const browserDistFolder = resolve(serverDistFolder, '../browser');
-
+// Create express application
 const app = express();
-const angularApp = new AngularNodeAppEngine();
+const PORT = process.env['PORT'] || 4000;
+const DIST_FOLDER = join(process.cwd(), 'docs');
 
-/**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/**', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
+// Check if the app is running in production
+const isProduction = process.env['NODE_ENV'] === 'production';
 
-/**
- * Serve static files from /browser
- */
-app.use(
-  express.static(browserDistFolder, {
-    maxAge: '1y',
-    index: false,
-    redirect: false,
-  }),
-);
+// Serve static files from the docs folder
+app.get('*.*', express.static(DIST_FOLDER, {
+  maxAge: '1y'
+}));
 
-/**
- * Handle all other requests by rendering the Angular application.
- */
-app.use('/**', (req, res, next) => {
-  angularApp
-    .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
-    .catch(next);
-});
+// Define the index.html path
+const indexPath = join(DIST_FOLDER, 'index.html');
+let indexHtml: string;
 
-/**
- * Start the server if this module is the main entry point.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
- */
-if (isMainModule(import.meta.url)) {
-  const port = process.env['PORT'] || 4000;
-  app.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
-  });
+// Read the index file once when server starts to improve performance
+try {
+  indexHtml = fs.readFileSync(indexPath, 'utf8');
+  console.log('Index file loaded successfully');
+} catch (error) {
+  console.error('Error reading index file:', error);
+  process.exit(1);
 }
 
-/**
- * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
- */
-export const reqHandler = createNodeRequestHandler(app);
+// Log requests in development
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (!isProduction) {
+    console.log(`${req.method} ${req.url}`);
+  }
+  next();
+});
+
+// All routes will serve the index.html file for Angular to handle
+app.use('/**', (req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.send(indexHtml);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Error handler
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error('Server error:', err);
+  res.status(500).send('Internal Server Error');
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Serving files from ${DIST_FOLDER}`);
+});
