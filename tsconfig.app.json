@@ -9,24 +9,6 @@
   },
   "files": [
     "src/main.ts"
-<<<<<<< HEAD
-<<<<<<< HEAD
-  ],
-  "include": [
-    "src/**/*.d.ts"
-  ],
-  "exclude": [
-    "src/server.ts",
-    "src/main.server.ts",
-    "src/app/app.config.server.ts",
-    "src/app/app.routes.server.ts",
-    "src/test.ts",
-    "**/*.spec.ts",
-    "**/node_modules/@angular/ssr/**",
-    "node_modules/@angular/ssr/**",
-    "**/*.server.ts",
-    "**/*ssr*.*"
-=======
   ],
   "exclude": [
     "src/server.ts",
@@ -42,23 +24,5 @@
   ],
   "include": [
     "src/**/*.ts"
->>>>>>> origin/Production
-=======
-  ],
-  "exclude": [
-    "src/server.ts",
-    "src/main.server.ts",
-    "src/app/app.config.server.ts",
-    "src/app/app.routes.server.ts",
-    "src/test.ts",
-    "**/*.spec.ts",
-    "**/node_modules/@angular/ssr/**",
-    "node_modules/@angular/ssr/**",
-    "**/*.server.ts",
-    "**/*ssr*.*"
-  ],
-  "include": [
-    "src/**/*.ts"
->>>>>>> origin/Production
   ]
 }
