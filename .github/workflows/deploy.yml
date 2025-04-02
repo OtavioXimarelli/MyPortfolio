@@ -34,9 +34,41 @@ jobs:
       - name: Create logs directory
         run: mkdir -p deployment_logs
       
+      - name: Check Angular output path in angular.json
+        id: check_config
+        run: |
+          if [ -f "angular.json" ]; then
+            DEFAULT_OUTPUT_PATH=$(grep -o '"outputPath": *"[^"]*"' angular.json | head -1 | cut -d'"' -f4)
+            if [ -n "$DEFAULT_OUTPUT_PATH" ]; then
+              echo "output_path=$DEFAULT_OUTPUT_PATH" >> $GITHUB_OUTPUT
+              echo "Using output path from angular.json: $DEFAULT_OUTPUT_PATH"
+            else
+              echo "output_path=dist" >> $GITHUB_OUTPUT
+              echo "No outputPath found in angular.json, using default: dist"
+            fi
+          else
+            echo "output_path=dist" >> $GITHUB_OUTPUT
+            echo "No angular.json found, using default: dist"
+          fi
+      
       - name: Build Angular app
         run: |
-          yarn build --configuration production --output-path=docs --base-href="/${{ github.event.repository.name }}/" 2>&1 | tee deployment_logs/build_log_${{ steps.timestamp.outputs.timestamp }}.txt
+          yarn build --configuration production --base-href="/${{ github.event.repository.name }}/" 2>&1 | tee deployment_logs/build_log_${{ steps.timestamp.outputs.timestamp }}.txt
+      
+      - name: Ensure docs directory exists
+        run: |
+          if [ ! -d "docs" ]; then
+            if [ -d "${{ steps.check_config.outputs.output_path }}" ]; then
+              echo "Build directory found at ${{ steps.check_config.outputs.output_path }}, copying to docs/"
+              mkdir -p docs
+              cp -r ${{ steps.check_config.outputs.output_path }}/* docs/
+            else
+              echo "Build directory not found at ${{ steps.check_config.outputs.output_path }}, listing contents of current directory:"
+              ls -la
+              echo "Creating empty docs directory"
+              mkdir -p docs
+            fi
+          fi
       
       - name: Add .nojekyll file
         run: touch docs/.nojekyll
