@@ -1,0 +1,25 @@
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 1.5rem 0;
+
+  @media (max-width: 576px) {
+    justify-content: center;
+  }
+
+  .skill-tag {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    background-color: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.3);
+    }
+  }
+}
