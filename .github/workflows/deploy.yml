@@ -13,15 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
+          cache: 'yarn'
       
-      - name: Install dependencies
-        run: npm ci
+      - name: Install Yarn
+        run: npm install -g yarn
+      
+      - name: Install dependencies with Yarn
+        run: yarn install --frozen-lockfile
         
       - name: Generate build timestamp
         id: timestamp
@@ -32,7 +36,7 @@ jobs:
       
       - name: Build Angular app
         run: |
-          npm run build --configuration production --output-path=docs --base-href="/${{ github.event.repository.name }}/" 2>&1 | tee deployment_logs/build_log_${{ steps.timestamp.outputs.timestamp }}.txt
+          yarn build --configuration production --output-path=docs --base-href="/${{ github.event.repository.name }}/" 2>&1 | tee deployment_logs/build_log_${{ steps.timestamp.outputs.timestamp }}.txt
       
       - name: Add .nojekyll file
         run: touch docs/.nojekyll
