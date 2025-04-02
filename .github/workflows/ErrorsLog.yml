@@ -1,0 +1,53 @@
+name: Analyze Deployment Logs
+on:
+  workflow_run:
+    workflows: ["Build and Deploy Angular App"]
+    types:
+      - completed
+
+jobs:
+  analyze-logs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download logs from previous workflow
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          run_id: ${{ github.event.workflow_run.id }}
+          name: deployment-logs-*
+          path: all_deployment_logs
+      
+      - name: Process logs
+        run: |
+          mkdir -p processed_logs
+          find all_deployment_logs -type f -name "*.txt" | xargs cat > processed_logs/combined_logs.txt
+          grep -i "error\|exception\|failed" processed_logs/combined_logs.txt > processed_logs/error_summary.txt || true
+          grep -i "warning" processed_logs/combined_logs.txt > processed_logs/warnings_summary.txt || true
+          echo "Deployment Status: ${{ github.event.workflow_run.conclusion }}" > processed_logs/status_report.txt
+          echo "Total errors found: $(grep -i "error\|exception\|failed" processed_logs/combined_logs.txt | wc -l)" >> processed_logs/status_report.txt
+          
+      - name: Upload processed logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: processed-logs-${{ github.run_id }}
+          path: processed_logs/
+          retention-days: 30
+      
+      - name: Send notification on failure
+        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueBody = `## Deployment Failed
+            Workflow run: [#${{ github.event.workflow_run.run_number }}](${{ github.event.workflow_run.html_url }})
+            Commit: ${{ github.event.workflow_run.head_commit.message }}
+            
+            Check the logs for more details.`;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Deployment failed on ${new Date().toISOString().split('T')[0]}`,
+              body: issueBody,
+              labels: ['deployment-failure']
+            });
