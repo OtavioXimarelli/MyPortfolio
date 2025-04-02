@@ -1,12 +1,6 @@
 const express = require('express');
 const path = require('path');
-<<<<<<< HEAD
-<<<<<<< HEAD
 const fs = require('fs');
-=======
->>>>>>> origin/Production
-=======
->>>>>>> origin/Production
 
 // Create express application
 const app = express();
@@ -18,15 +12,8 @@ app.use(express.static(DIST_FOLDER));
 
 // All routes serve the index.html file
 app.get('*', (req, res) => {
-<<<<<<< HEAD
-<<<<<<< HEAD
   const indexPath = path.join(DIST_FOLDER, 'index.html');
-  res.sendFile(indexPath);
-=======
-  res.sendFile(path.join(DIST_FOLDER, 'index.html'));
->>>>>>> origin/Production
-=======
-  res.sendFile(path.join(DIST_FOLDER, 'index.html'), (err) => {
+  res.sendFile(indexPath, (err) => {
     if (err) {
       if (err.code === 'ENOENT') {
         res.status(404).send('index.html file not found');
@@ -35,7 +22,6 @@ app.get('*', (req, res) => {
       }
     }
   });
->>>>>>> origin/Production
 });
 
 // Start the server

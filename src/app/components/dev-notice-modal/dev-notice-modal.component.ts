@@ -1,14 +1,11 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ModalService } from '../../services/modal.service';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dev-notice-modal',
   templateUrl: './dev-notice-modal.component.html',
-  styleUrls: ['./dev-notice-modal.component.scss'],
-  standalone: true,
-  imports: [CommonModule]
+  styleUrls: ['./dev-notice-modal.component.scss']
 })
 export class DevNoticeModalComponent implements OnInit {
   isOpen$: Observable<boolean>;
