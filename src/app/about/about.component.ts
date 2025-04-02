@@ -9,14 +9,12 @@ import { CounterAnimationService } from '../services/counter-animation.service';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit, OnDestroy {
-  profileImage = 'assets/profile.jpg';
-  fallbackImage = 'assets/profile-placeholder.jpg';
-
+  // Redefinindo a posição dos techIcons para evitar sobreposição
   techIcons = [
-    { src: 'assets/icons/java.svg', alt: 'Java' },
-    { src: 'assets/icons/spring.svg', alt: 'Spring' },
-    { src: 'assets/icons/aws.svg', alt: 'AWS' },
-    { src: 'assets/icons/docker.svg', alt: 'Docker' }
+    { alt: 'Java' },
+    { alt: 'Spring' },
+    { alt: 'AWS' },
+    { alt: 'Docker' }
   ];
 
   timeline = [
@@ -112,6 +110,12 @@ export class AboutComponent implements OnInit, OnDestroy {
 
     // Initialize animations outside Angular zone for better performance
     this.initAnimations();
+
+    // Setup tab functionality
+    this.setupTabsNavigation();
+    
+    // Inicializar posições aleatórias para os ícones tech que não estejam sobre o texto
+    this.setupTechIcons();
   }
 
   ngOnDestroy() {
@@ -134,8 +138,47 @@ export class AboutComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleImageError() {
-    this.profileImage = this.fallbackImage;
+  private setupTabsNavigation() {
+    setTimeout(() => {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+      
+      tabButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const tabIndex = button.getAttribute('data-tab');
+          
+          // Update active states for buttons
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          // Show correct tab pane
+          tabPanes.forEach(pane => pane.classList.remove('active'));
+          if (tabIndex !== null) {
+            tabPanes[parseInt(tabIndex)].classList.add('active');
+          }
+        });
+      });
+    }, 500);
+  }
+
+  private setupTechIcons() {
+    setTimeout(() => {
+      const heroWidth = document.querySelector('.hero')?.clientWidth || 1000;
+      const heroHeight = document.querySelector('.hero')?.clientHeight || 600;
+      
+      const techIcons = document.querySelectorAll('.floating-icon');
+      techIcons.forEach((icon, index) => {
+        // Distribuir ícones na parte direita da tela para não sobrepor o texto
+        const randomTop = 10 + Math.random() * 80; // 10% a 90% do topo
+        const randomLeft = 60 + Math.random() * 35; // 60% a 95% da esquerda (região direita)
+        
+        (icon as HTMLElement).style.top = `${randomTop}%`;
+        (icon as HTMLElement).style.left = `${randomLeft}%`;
+        
+        // Atraso na animação para não começarem todas ao mesmo tempo
+        (icon as HTMLElement).style.animationDelay = `${index * 2}s`;
+      });
+    }, 100);
   }
 
   scrollToSection(elementId: string) {
