@@ -14,12 +14,18 @@ jobs:
         with:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           run_id: ${{ github.event.workflow_run.id }}
-          name: deployment-logs-*
+          name: deployment-logs-
           path: all_deployment_logs
+          search_artifacts: true
       
       - name: Process logs
         run: |
           mkdir -p processed_logs
+          if [ -z "$(find all_deployment_logs -type f -name "*.txt" 2>/dev/null)" ]; then
+            echo "No log files found to process" > processed_logs/error_message.txt
+            exit 0
+          fi
+          
           find all_deployment_logs -type f -name "*.txt" | xargs cat > processed_logs/combined_logs.txt
           grep -i "error\|exception\|failed" processed_logs/combined_logs.txt > processed_logs/error_summary.txt || true
           grep -i "warning" processed_logs/combined_logs.txt > processed_logs/warnings_summary.txt || true
