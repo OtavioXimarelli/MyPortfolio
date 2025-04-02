@@ -27,7 +27,7 @@ jobs:
           echo "Total errors found: $(grep -i "error\|exception\|failed" processed_logs/combined_logs.txt | wc -l)" >> processed_logs/status_report.txt
           
       - name: Upload processed logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: processed-logs-${{ github.run_id }}
           path: processed_logs/
