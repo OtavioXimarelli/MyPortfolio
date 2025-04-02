@@ -11,6 +11,7 @@ import { ProjectsComponent } from './projects/projects.component';
 import { ContactComponent } from './contact/contact.component';
 import { ScrollAnimationService } from './services/scroll-animation.service';
 import { CounterAnimationService } from './services/counter-animation.service';
+import { DevNoticeModalComponent } from './components/dev-notice-modal/dev-notice-modal.component';
 import { environment } from '../environments/environment';
 
 @NgModule({
@@ -19,7 +20,8 @@ import { environment } from '../environments/environment';
     AboutComponent,
     SkillsComponent,
     ProjectsComponent,
-    ContactComponent
+    ContactComponent,
+    DevNoticeModalComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +36,6 @@ import { environment } from '../environments/environment';
       { path: 'contact', component: ContactComponent },
       { path: '**', redirectTo: '' }
     ], { 
-      // Configurações do roteador baseadas no ambiente
       useHash: environment.production 
     })
   ],

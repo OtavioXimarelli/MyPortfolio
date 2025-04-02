@@ -1,0 +1,343 @@
+:host {
+  display: block;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.modal-container {
+  width: 90%;
+  max-width: 550px;
+  transform: translateY(30px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  animation: slideUp 0.4s ease forwards 0.1s;
+  
+  &.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+  }
+}
+
+.modal-header {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+  
+  .logo-container {
+    margin-right: 1rem;
+  }
+  
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .close-btn {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    background: transparent;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--gray);
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--primary);
+      transform: rotate(90deg);
+    }
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.modal-body {
+  padding: 1.5rem;
+  
+  .icon-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    
+    svg {
+      color: var(--secondary);
+      animation: pulse 2s infinite ease-in-out;
+    }
+  }
+  
+  .message {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: var(--text-primary);
+  }
+  
+  p {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  
+  .highlight {
+    color: var(--primary);
+    font-weight: 600;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--primary);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+    
+    &:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+  
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+    
+    .feature {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 1rem;
+      border-radius: 8px;
+      background: rgba(var(--primary-rgb), 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(var(--primary-rgb), 0.1);
+      }
+      
+      .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .feature-text {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+    }
+  }
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    
+    &-primary {
+      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(var(--primary-rgb), 0.4);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+// Estilo para quando o modal está aberto
+:host-context(body.modal-open) {
+  overflow: hidden;
+}
+
+// Estilos do tema escuro
+:host-context(.dark-theme) {
+  .modal-content {
+    background: #222;
+    color: white;
+    
+    &::before {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+  }
+  
+  .modal-header {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+    
+    .close-btn {
+      color: var(--gray);
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+  
+  .modal-body {
+    p {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .message {
+      color: white;
+    }
+    
+    .features .feature {
+      background: rgba(255, 255, 255, 0.05);
+      
+      .feature-text {
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+  }
+  
+  .modal-footer {
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Animações
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to { 
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+// Responsividade
+@media (max-width: 576px) {
+  .modal-header {
+    padding: 1rem;
+    
+    .modal-title {
+      font-size: 1.3rem;
+    }
+    
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+  }
+  
+  .modal-body {
+    padding: 1rem;
+    
+    .features {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .modal-footer {
+    padding: 1rem;
+    justify-content: center;
+    
+    .btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
