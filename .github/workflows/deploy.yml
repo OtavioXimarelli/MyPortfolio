@@ -2,7 +2,7 @@ name: Build and Deploy Angular App
 on:
   push:
     branches:
-      - main
+      - Production  # Alterado de main para Production
   workflow_dispatch:
 
 permissions:
@@ -24,7 +24,7 @@ jobs:
         run: npm ci
       
       - name: Build Angular app
-        run: npm run build --configuration production --base-href="/${{ github.event.repository.name }}/"
+        run: npm run build --configuration production --output-path=docs --base-href="/${{ github.event.repository.name }}/"
       
       - name: Add .nojekyll file
         run: touch docs/.nojekyll
