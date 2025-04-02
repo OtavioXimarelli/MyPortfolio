@@ -5,10 +5,10 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "prebuild:prod": "./fix-beasties.sh",
     "build:prod": "ng build --configuration production",
-    "build:server": "tsc -p tsconfig.server.json",
-    "build:all": "yarn build:prod && yarn build:server",
-    "serve:prod": "node dist/server/server.js",
+    "build:all": "yarn build:prod",
+    "serve:prod": "node server.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

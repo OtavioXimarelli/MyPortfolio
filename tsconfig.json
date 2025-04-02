@@ -22,6 +22,7 @@
     "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true, // Added this option
     "esModuleInterop": true, // Added this option
+    "skipLibCheck": true,
     "lib": [
       "ES2022",
       "dom"
@@ -36,9 +37,11 @@
   "exclude": [
     "src/main.server.ts",
     "src/app/app.config.server.ts",
-    "src/app/app.config.ts",
     "src/app/app.routes.ts",
-    "src/server.ts"
+    "src/server.ts",
+    "src/app/**/*.server.ts",
+    "**/*ssr*.*",
+    "**/*.server.ts"
   ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
