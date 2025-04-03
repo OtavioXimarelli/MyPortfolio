@@ -115,58 +115,86 @@ jobs:
           retention-days: 30
       
       - name: Send email notification on success
-        if: success()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: ${{ secrets.MAIL_SERVER }}
-          server_port: ${{ secrets.MAIL_PORT }}
-          secure: true
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: ✅ Successful Build and Deploy for ${{ github.repository }}
-          html_body: |
-            Build and deployment for ${{ github.repository }} completed successfully.
-            
-            <b>Details:</b>
-            <ul>
-              <li>Repository: ${{ github.repository }}</li>
-              <li>Commit: ${{ github.sha }}</li>
-              <li>Commit message: ${{ github.event.head_commit.message }}</li>
-              <li>Workflow: ${{ github.workflow }}</li>
-              <li>Timestamp: $(date)</li>
-            </ul>
-            
-            <p>
-              <a href="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/">View the deployment</a><br>
-              <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View workflow run</a>
-            </p>
-          from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
-          to: ${{ secrets.MAIL_RECIPIENT }}
+  if: success()
+  uses: dawidd6/action-send-mail@v3
+  with:
+    server_address: ${{ secrets.MAIL_SERVER }}
+    server_port: ${{ secrets.MAIL_PORT }}
+    secure: true
+    username: ${{ secrets.MAIL_USERNAME }}
+    password: ${{ secrets.MAIL_PASSWORD }}
+    subject: ✅ Successful Build and Deploy for ${{ github.repository }}
+    html_body: |
+      <h2>🚀 Build and deployment for ${{ github.repository }} completed successfully!</h2>
       
-      - name: Send email notification on failure
-        if: failure()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: ${{ secrets.MAIL_SERVER }}
-          server_port: ${{ secrets.MAIL_PORT }}
-          secure: true
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: ❌ Failed Build for ${{ github.repository }}
-          html_body: |
-            Build or deployment for ${{ github.repository }} failed.
-            
-            <b>Details:</b>
-            <ul>
-              <li>Repository: ${{ github.repository }}</li>
-              <li>Commit: ${{ github.sha }}</li>
-              <li>Commit message: ${{ github.event.head_commit.message }}</li>
-              <li>Workflow: ${{ github.workflow }}</li>
-              <li>Timestamp: $(date)</li>
-            </ul>
-            
-            <p>
-              <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View logs and details</a>
-            </p>
-          from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
-          to: ${{ secrets.MAIL_RECIPIENT }}
+      <b>📋 Details:</b>
+      <ul>
+        <li><b>Repository:</b> ${{ github.repository }}</li>
+        <li><b>Branch:</b> ${{ github.ref_name }}</li>
+        <li><b>Commit:</b> ${{ github.sha }}</li>
+        <li><b>Commit message:</b> ${{ github.event.head_commit.message }}</li>
+        <li><b>Workflow:</b> ${{ github.workflow }}</li>
+        <li><b>Timestamp:</b> ${{ format(github.event.repository.updated_at, 'dddd, MMMM Do YYYY, h:mm:ss a') }}</li>
+        <li><b>Author:</b> ${{ github.actor }}</li>
+        <li><b>Run ID:</b> ${{ github.run_id }}</li>
+        <li><b>Run Number:</b> ${{ github.run_number }}</li>
+      </ul>
+      
+      <h3>📊 Deployment Information</h3>
+      <ul>
+        <li><b>Environment:</b> GitHub Pages</li>
+        <li><b>Status:</b> ${{ env.deployment_status || 'Completed' }}</li>
+        <li><b>Deployed URL:</b> <a href="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/">https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/</a></li>
+      </ul>
+      
+      <h3>🔗 Quick Links</h3>
+      <p>
+        <a href="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/">📱 View the deployment</a><br>
+        <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">📋 View workflow run</a><br>
+        <a href="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}">💻 View commit details</a>
+      </p>
+      
+      <hr>
+      <p style="color:#666;font-size:12px">This is an automated message from GitHub Actions. Please do not reply to this email.</p>
+    from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
+    to: ${{ secrets.MAIL_RECIPIENT }}
+      
+    name: Send email notification on failure
+  if: failure()
+  uses: dawidd6/action-send-mail@v3
+  with:
+    server_address: ${{ secrets.MAIL_SERVER }}
+    server_port: 587
+    secure: false
+    username: ${{ secrets.MAIL_USERNAME }}
+    password: ${{ secrets.MAIL_PASSWORD }}
+    subject: ❌ Failed Build for ${{ github.repository }}
+    html_body: |
+      <h2>⚠️ Build or deployment for ${{ github.repository }} failed!</h2>
+      
+      <b>📋 Details:</b>
+      <ul>
+        <li><b>Repository:</b> ${{ github.repository }}</li>
+        <li><b>Branch:</b> ${{ github.ref_name }}</li>
+        <li><b>Commit:</b> ${{ github.sha }}</li>
+        <li><b>Commit message:</b> ${{ github.event.head_commit.message }}</li>
+        <li><b>Workflow:</b> ${{ github.workflow }}</li>
+        <li><b>Timestamp:</b> ${{ format(github.event.repository.updated_at, 'dddd, MMMM Do YYYY, h:mm:ss a') }}</li>
+        <li><b>Author:</b> ${{ github.actor }}</li>
+        <li><b>Run ID:</b> ${{ github.run_id }}</li>
+        <li><b>Run Number:</b> ${{ github.run_number }}</li>
+      </ul>
+      
+      <h3>❌ Error Information</h3>
+      <p>Review the workflow logs for detailed error information.</p>
+      
+      <h3>🔗 Quick Links</h3>
+      <p>
+        <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">📋 View error logs and details</a><br>
+        <a href="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}">💻 View commit details</a>
+      </p>
+      
+      <hr>
+      <p style="color:#666;font-size:12px">This is an automated message from GitHub Actions. Please do not reply to this email.</p>
+    from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
+    to: ${{ secrets.MAIL_RECIPIENT }}
