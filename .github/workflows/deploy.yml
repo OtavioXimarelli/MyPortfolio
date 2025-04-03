@@ -120,24 +120,28 @@ jobs:
         with:
           server_address: ${{ secrets.MAIL_SERVER }}
           server_port: ${{ secrets.MAIL_PORT }}
+          secure: true
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: ✅ Successful Build and Deploy for ${{ github.repository }}
-          body: |
+          html_body: |
             Build and deployment for ${{ github.repository }} completed successfully.
             
-            **Details:**
-            - Repository: ${{ github.repository }}
-            - Commit: ${{ github.sha }}
-            - Commit message: ${{ github.event.head_commit.message }}
-            - Workflow: ${{ github.workflow }}
-            - Timestamp: $(date)
+            <b>Details:</b>
+            <ul>
+              <li>Repository: ${{ github.repository }}</li>
+              <li>Commit: ${{ github.sha }}</li>
+              <li>Commit message: ${{ github.event.head_commit.message }}</li>
+              <li>Workflow: ${{ github.workflow }}</li>
+              <li>Timestamp: $(date)</li>
+            </ul>
             
-            View the deployment: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
-            View workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            <p>
+              <a href="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/">View the deployment</a><br>
+              <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View workflow run</a>
+            </p>
           from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
           to: ${{ secrets.MAIL_RECIPIENT }}
-          content_type: text/html
       
       - name: Send email notification on failure
         if: failure()
@@ -145,20 +149,24 @@ jobs:
         with:
           server_address: ${{ secrets.MAIL_SERVER }}
           server_port: ${{ secrets.MAIL_PORT }}
+          secure: true
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: ❌ Failed Build for ${{ github.repository }}
-          body: |
+          html_body: |
             Build or deployment for ${{ github.repository }} failed.
             
-            **Details:**
-            - Repository: ${{ github.repository }}
-            - Commit: ${{ github.sha }}
-            - Commit message: ${{ github.event.head_commit.message }}
-            - Workflow: ${{ github.workflow }}
-            - Timestamp: $(date)
+            <b>Details:</b>
+            <ul>
+              <li>Repository: ${{ github.repository }}</li>
+              <li>Commit: ${{ github.sha }}</li>
+              <li>Commit message: ${{ github.event.head_commit.message }}</li>
+              <li>Workflow: ${{ github.workflow }}</li>
+              <li>Timestamp: $(date)</li>
+            </ul>
             
-            View logs and details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            <p>
+              <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">View logs and details</a>
+            </p>
           from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
           to: ${{ secrets.MAIL_RECIPIENT }}
-          content_type: text/html
