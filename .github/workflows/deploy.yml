@@ -4,10 +4,8 @@ on:
     branches:
       - Production
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -52,10 +50,25 @@ jobs:
           fi
       
       - name: Build Angular app
+        id: build
         run: |
           yarn build --configuration production --base-href="/${{ github.event.repository.name }}/" 2>&1 | tee deployment_logs/build_log_${{ steps.timestamp.outputs.timestamp }}.txt
+        continue-on-error: true
+      
+      - name: Check build status
+        id: check_build
+        run: |
+          if [ "${{ steps.build.outcome }}" == "success" ]; then
+            echo "build_status=success" >> $GITHUB_OUTPUT
+            echo "Build completed successfully"
+          else
+            echo "build_status=failure" >> $GITHUB_OUTPUT
+            echo "Build failed"
+            exit 1
+          fi
       
       - name: Ensure docs directory exists
+        if: steps.check_build.outputs.build_status == 'success'
         run: |
           if [ ! -d "docs" ]; then
             if [ -d "${{ steps.check_config.outputs.output_path }}" ]; then
@@ -71,9 +84,11 @@ jobs:
           fi
       
       - name: Add .nojekyll file
+        if: steps.check_build.outputs.build_status == 'success'
         run: touch docs/.nojekyll
       
       - name: Deploy to GitHub Pages
+        if: steps.check_build.outputs.build_status == 'success'
         id: deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
@@ -82,14 +97,68 @@ jobs:
           clean: true
         
       - name: Log deployment result
+        if: always()
         run: |
           echo "Deployment completed at $(date)" >> deployment_logs/deploy_summary_${{ steps.timestamp.outputs.timestamp }}.txt
           echo "Commit: ${{ github.sha }}" >> deployment_logs/deploy_summary_${{ steps.timestamp.outputs.timestamp }}.txt
-          echo "Deployment status: ${{ steps.deploy.outcome }}" >> deployment_logs/deploy_summary_${{ steps.timestamp.outputs.timestamp }}.txt
+          echo "Build status: ${{ steps.check_build.outputs.build_status }}" >> deployment_logs/deploy_summary_${{ steps.timestamp.outputs.timestamp }}.txt
+          if [ "${{ steps.check_build.outputs.build_status }}" == "success" ]; then
+            echo "Deployment status: ${{ steps.deploy.outcome }}" >> deployment_logs/deploy_summary_${{ steps.timestamp.outputs.timestamp }}.txt
+          fi
       
       - name: Archive deployment logs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: deployment-logs-${{ steps.timestamp.outputs.timestamp }}
           path: deployment_logs/
           retention-days: 30
+      
+      - name: Send email notification on success
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: ✅ Successful Build and Deploy for ${{ github.repository }}
+          body: |
+            Build and deployment for ${{ github.repository }} completed successfully.
+            
+            **Details:**
+            - Repository: ${{ github.repository }}
+            - Commit: ${{ github.sha }}
+            - Commit message: ${{ github.event.head_commit.message }}
+            - Workflow: ${{ github.workflow }}
+            - Timestamp: $(date)
+            
+            View the deployment: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+            View workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
+          to: ${{ secrets.MAIL_RECIPIENT }}
+          content_type: text/html
+      
+      - name: Send email notification on failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: ❌ Failed Build for ${{ github.repository }}
+          body: |
+            Build or deployment for ${{ github.repository }} failed.
+            
+            **Details:**
+            - Repository: ${{ github.repository }}
+            - Commit: ${{ github.sha }}
+            - Commit message: ${{ github.event.head_commit.message }}
+            - Workflow: ${{ github.workflow }}
+            - Timestamp: $(date)
+            
+            View logs and details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
+          to: ${{ secrets.MAIL_RECIPIENT }}
+          content_type: text/html
